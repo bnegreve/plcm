@@ -1,0 +1,6 @@
+
+PLCM is a frequent itemset mining algorithm based on the LCM algorithm. 
+
+Reference paper : 
+Discovering Closed Frequent Itemsets on Multicore : Parallelizing Computations and Optimizing Memory Accesses. Benjamin Negrevergne Alexandre Termier Jean-François Méhaut And Takeaki Uno. 
+
