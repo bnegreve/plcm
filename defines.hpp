@@ -62,7 +62,7 @@ typedef Array<item_t> Itemset;
 
 #define REORDER_ITEMS_BASE
 
-#define MEMORY_OUTPUT 
+//#define MEMORY_OUTPUT 
 
 
 /* Enable db reduction on initial database*/

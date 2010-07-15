@@ -7,11 +7,17 @@
 #include "Permutations.hpp" 
 #include <unistd.h>
 #ifdef PARALLEL_PROCESS
-#include <TupleSpace.hpp>
-#include <Tuple.hpp>
-#include <ThreadID.hpp>
 #include <ostream>
-TupleSpace ts; 
+#include <sstream>
+
+extern "C" {
+#include <tuplespace.h>
+#include <thread.h>
+}
+
+#include "melinda_local.hpp"
+tuplespace_t ts;
+
 const unsigned int NUM_THREADS = NUM_THREADS_MACRO;
 #endif //PARALLEL_PROCESS
 
@@ -120,7 +126,7 @@ void lcmIter(const TransactionTable &tt, OccurencesTable *ot,
     return; 
   }
   
-  //  output<<*itemset<<" ("<<freq<<") "<<endl;
+  //output<<*itemset<<" ("<<freq<<") "<<endl;
   dumpItemset(output, *itemset, freq); 
   //  itemset.dump(output, freq);  
   nbItemsets++; 
@@ -284,45 +290,7 @@ void dumpItemset(std::ostream &os, const Itemset &itemset, freq_t freq){
 /*** BEG processTupleThread ***/
 #ifdef PARALLEL_PROCESS
 void processTupleThread(int id){
-  THREAD::registerThread(); 
-//   switch (THREAD::getMyID()){
-//   case 0:
-//     THREAD::bindToProcessor(0);
-//     break;
-//   case 1:
-//     THREAD::bindToProcessor(12);
-//     break; 
-//   case 2:
-//     THREAD::bindToProcessor(4); 
-//     break; 
-//   case 3:
-//     THREAD::bindToProcessor(16); 
-//     break; 
-//   case 4:
-//     THREAD::bindToProcessor(8); 
-//     break; 
-//   case 5:
-//     THREAD::bindToProcessor(20); 
-//     break; 
-//   case 6:
-//     THREAD::bindToProcessor(1);
-//     break;
-//   case 7:
-//     THREAD::bindToProcessor(13);
-//     break; 
-//   case 8:
-//     THREAD::bindToProcessor(5); 
-//     break; 
-//   case 9:
-//     THREAD::bindToProcessor(17); 
-//     break; 
-//   case 10:
-//     THREAD::bindToProcessor(9); 
-//     break; 
-//   case 11:
-//     THREAD::bindToProcessor(21); 
-//     break; 
-//   }
+  m_thread_register(); 
 
   /* Open a file for the current thread output */
   char outputName[] ="out_a"; 
@@ -343,31 +311,29 @@ void processTupleThread(int id){
   item_t previous; 
 
   /* Retreives a Tuple */
-  static const Tuple templateTuple("????????"); 
   for(;;){
-    Tuple *t; 
-    int r = ts.getTuple(1, templateTuple, t); 
-    if(r != 1){
-      if(r == NO_MATCHES)
-	continue;
-      if(r == SPACE_CLOSED)
-	break; 
-    }
+    tuple_t t; 
+    
+    int r = m_tuplespace_get(&ts, 1, (tuple_t*)&t);
 
-    tt = t->getValue<TransactionTable *>(0);
-    ot = t->getValue<OccurencesTable *>(1);
-    frequencies = t->getValue<Frequencies *>(2);    
-    itemset = t->getValue<Itemset *>(3);
-    item = t->getValue<item_t>(4);
-    threshold = t->getValue<int>(5); 
-    previous = t->getValue<item_t>(6); 
+    if(r == TUPLESPACE_CLOSED)
+      break; 
+  
+    // tt = t->getValue<TransactionTable *>(0);
+    // ot = t->getValue<OccurencesTable *>(1);
+    // frequencies = t->getValue<Frequencies *>(2);    
+    // itemset = t->getValue<Itemset *>(3);
+    // item = t->getValue<item_t>(4);
+    // threshold = t->getValue<int>(5); 
+    // previous = t->getValue<item_t>(6); 
 
+    tt = t.tt; 
     /* call */
     //    usleep(200000); 
-    lcmIter(*tt, ot, frequencies, itemset, item, threshold,
-	    previous, output, (previous==-1?1:2), true); 
+    lcmIter(*t.tt, t.ot, t.frequencies, t.itemset, t.item, t.threshold,
+	    t.previous, output, (previous==-1?1:2), true); 
 
-    delete t; 
+    //    delete t; 
   }
 }
 #endif // PARALLEL_PROCESS
@@ -377,7 +343,7 @@ void processTupleThread(int id){
 /*** BEG main ***/
 int main(int argc, char **argv){
   std::ofstream outputFile; 
-
+  m_tuplespace_init(&ts, sizeof(tuple_t), 0, TUPLESPACE_OPTIONAUTOCLOSE); 
   /* Deals with optional argument (ie. output file) */ 
   switch (argc){
   case (3):
@@ -482,11 +448,17 @@ int main(int argc, char **argv){
     item_t item = randomizer[i]; 
     randomizer.erase(randomizer.begin()+i); 
  
-    Tuple t("ppppiii", (char*) &itt, (char*) &ot, (char*)&frequencies, 
-	    (char*) new Itemset, item, threshold, -1); 
-    ts.putTuple(t, (unsigned int)item%NUM_INTERNALS); 
+    tuple_t t; 
+    t.tt = &itt; 
+    t.ot = &ot; 
+    t.frequencies = &frequencies; 
+    t.itemset = new Itemset; 
+    t.item = item; 
+    t.threshold = threshold; 
+    t.previous = -1; 
+    m_tuplespace_put(&ts, (opaque_tuple_t*)&t, 1); 
   }
-  ts.close(); 
+  //  m_tuplespace_close(&ts); 
 
 
   /* Run the threads */

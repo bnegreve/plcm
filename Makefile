@@ -14,9 +14,9 @@
 #CC = g++ -O3 
 CC = g++ -g
 
-BELINDA_DIR=../belinda/
+MELINDA_DIR=../../melinda/
 
-LIBS= -lbelinda -lpthread
+LIBS= -lmelinda -lpthread
 #HEAPALLOC
 
 ##Compilation parameters
@@ -47,11 +47,11 @@ endif
 
 
 
-CFLAGS+=  -I/usr/local/include $(INCS) -I$(BELINDA_DIR) 
-#CFLAGS= -g3  -I/usr/local/include  -I$(BELINDA_DIR) -I$(LINUX_TUPLES)
+CFLAGS+=  -I/usr/local/include $(INCS) -I$(MELINDA_DIR) 
+#CFLAGS= -g3  -I/usr/local/include  -I$(MELINDA_DIR) -I$(LINUX_TUPLES)
 
 ##Link parameters
-LDFLAGS+= -L/usr/local/lib -L$(BELINDA_DIR) 
+LDFLAGS+= -L/usr/local/lib -L$(MELINDA_DIR) 
 
 
 #for assembly debug
@@ -88,7 +88,7 @@ ASMS=$(addsuffix .s,$(basename $(SRCS)))
 
 
 
-$(EXE_NAME): $(OBJS) libbelinda.a 
+$(EXE_NAME): $(OBJS) libmelinda.a 
 	$(CC) $(LDFLAGS) $(OBJS) $(LIBS) -o $@
 
 asm_debug: $(ASMS) 
@@ -99,8 +99,8 @@ asm_debug: $(ASMS)
 dep: 
 	$(CC)  $(CFLAGS) -MM $(SRCS) > depends
 
-libbelinda.a:
-	make -C$(BELINDA_DIR) $@
+libmelinda.a:
+	make -C$(MELINDA_DIR) $@
 
 # liblt.a:
 # 	make -C $(LINUX_TUPLES) tuple.o
