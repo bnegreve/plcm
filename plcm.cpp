@@ -343,7 +343,8 @@ void processTupleThread(int id){
 /*** BEG main ***/
 int main(int argc, char **argv){
   std::ofstream outputFile; 
-  m_tuplespace_init(&ts, sizeof(tuple_t), 0, TUPLESPACE_OPTIONAUTOCLOSE); 
+  m_tuplespace_init(&ts, sizeof(tuple_t), 0, NULL); 
+  m_thread_register(); 
   /* Deals with optional argument (ie. output file) */ 
   switch (argc){
   case (3):
@@ -458,7 +459,8 @@ int main(int argc, char **argv){
     t.previous = -1; 
     m_tuplespace_put(&ts, (opaque_tuple_t*)&t, 1); 
   }
-  //  m_tuplespace_close(&ts); 
+
+  m_tuplespace_close(&ts); 
 
 
   /* Run the threads */

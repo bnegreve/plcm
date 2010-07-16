@@ -1,6 +1,7 @@
 
 extern "C" {
 #include <melinda.h>
+#include <thread.h>
 }
 
 #include "Transactions.hpp"
@@ -17,9 +18,9 @@ typedef struct {
 
 
 int m_distribute(opaque_tuple_t *tuple){
-  return 0; 
+  return m_thread_id(); 
 }
 
 int m_retrieve(){
-  return 0; 
+  return m_thread_id(); 
 }
