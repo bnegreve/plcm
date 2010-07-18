@@ -343,7 +343,7 @@ void processTupleThread(int id){
 /*** BEG main ***/
 int main(int argc, char **argv){
   std::ofstream outputFile; 
-  m_tuplespace_init(&ts, sizeof(tuple_t), 0, NULL); 
+  m_tuplespace_init(&ts, sizeof(tuple_t), 0, TUPLESPACE_OPTIONAUTOCLOSE); 
   m_thread_register(); 
   /* Deals with optional argument (ie. output file) */ 
   switch (argc){
@@ -363,7 +363,8 @@ int main(int argc, char **argv){
     cout << "Usage = " << argv[0] << " <input file name> <absolute support threshold> [<output file>]" << endl ;
     exit(EXIT_FAILURE);     
   }
-
+  
+  SHOW_DEFINE(NDEBUG); 
   SHOW_DEFINE(PARALLEL_PROCESS);
   SHOW_DEFINE(REBASE_PERMUTE_ITEMS);
   SHOW_DEFINE(DB_REDUCTION_REDUCE_INITIAL_DB);
