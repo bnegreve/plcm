@@ -459,8 +459,8 @@ int main(int argc, char **argv){
     t.previous = -1; 
     m_tuplespace_put(&ts, (opaque_tuple_t*)&t, 1); 
   }
-
-  m_tuplespace_close(&ts); 
+  
+  m_tuplespace_close_at(&ts, NUM_THREADS); 
 
 
   /* Run the threads */

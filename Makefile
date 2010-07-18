@@ -100,7 +100,7 @@ dep:
 	$(CC)  $(CFLAGS) -MM $(SRCS) > depends
 
 libmelinda.a:
-	make -C$(MELINDA_DIR) $@
+	make -C$(MELINDA_DIR) melinda
 
 # liblt.a:
 # 	make -C $(LINUX_TUPLES) tuple.o
