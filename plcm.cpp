@@ -230,18 +230,20 @@ void lcmIter(const TransactionTable &tt, OccurencesTable *ot,
 #ifdef MULTI_LEVEL_TUPLES
 
      if(rebase  && depth <= 1){ 
+       tuple_t tuples[candidates.size()]; 
+       int i = 0; 
        for(const item_t *candidate = candidates.pData(); 
-	   candidate < candidates.pEnd() && *candidate < item; ++candidate){
-	 tuple_t t; 
-	 t.tt = &newTT; 
-	 t.ot = ot; 
-	 t.frequencies = frequencies; 
-	 t.itemset = new Itemset(*itemset);
-	 t.item = *candidate;
-	 t.threshold = threshold; 
-	 t.previous = item; 
-	 m_tuplespace_put(&ts, (opaque_tuple_t*)&t, 1); 
+	   candidate < candidates.pEnd() && *candidate < item; ++candidate){	 
+	 tuple_t *t = &tuples[i++]; 
+	 t->tt = &newTT; 
+	 t->ot = ot; 
+	 t->frequencies = frequencies; 
+	 t->itemset = new Itemset(*itemset);
+	 t->item = *candidate;
+	 t->threshold = threshold; 
+	 t->previous = item; 
        }
+       m_tuplespace_put(&ts, (opaque_tuple_t*)&tuples, i); 
      }
   
      /* Recursive call for each candidates items. */
@@ -429,48 +431,39 @@ int main(int argc, char **argv){
      procecss the tuples while pushing the tuples */
 
   /* Pushes tuples into the tuplespace, each tuple is data for a call to lcmIter */
-
   std::vector<item_t> randomizer; 
-  cout<<"Pushing "<<itt.maxItem+1<<" tuples"<<endl;
+
+
+  int nbTuples = itt.maxItem+1; 
+  tuple_t tuples[nbTuples]; 
+
+
+  cout<<"Pushing "<<nbTuples<<" tuples"<<endl;
   for (item_t item = 0; item <= itt.maxItem; item++){
-    //    5B5B5B5B Tuple t("ppppiii", (char*) &itt, (char*) &ot, (char*)&frequencies, 
-    //	     (char*) new Itemset, item, threshold, -1); 
-     //     ts.putTuple(t, (unsigned int)item%NUM_INTERNALS); 
-     randomizer.push_back(item); 
-    //      itemset.resize(0); 
-    //      (*ot.occs)[item].clear(); 
+    tuple_t *t = &tuples[item]; 
+    t->tt = &itt; 
+    t->ot = &ot; 
+    t->frequencies = &frequencies; 
+    t->itemset = new Itemset; 
+    t->item = item; 
+    t->threshold = threshold; 
+    t->previous = -1;     
   }
 
+  m_tuplespace_put(&ts, (opaque_tuple_t*)&tuples, nbTuples); 
+  m_tuplespace_close_at(&ts, NUM_THREADS);   
 
-  while(randomizer.size()){
-    
-    int i = rand()%randomizer.size();
-    item_t item = randomizer[i]; 
-    randomizer.erase(randomizer.begin()+i); 
- 
-    tuple_t t; 
-    t.tt = &itt; 
-    t.ot = &ot; 
-    t.frequencies = &frequencies; 
-    t.itemset = new Itemset; 
-    t.item = item; 
-    t.threshold = threshold; 
-    t.previous = -1; 
-    m_tuplespace_put(&ts, (opaque_tuple_t*)&t, 1); 
-  }
-  
-  m_tuplespace_close_at(&ts, NUM_THREADS); 
 
 
   /* Run the threads */
   pthread_t *tids = new pthread_t[NUM_THREADS];
   for(int i = 0; i < NUM_THREADS; i++){
     cout<<"Creating thread"<<endl;
-    if(pthread_create(&tids[i], NULL, (void*(*)(void*))processTupleThread, (void*)i)){
+    if(pthread_create(&tids[i], NULL, 
+		      (void*(*)(void*))processTupleThread, (void*)i)){
       perror("pthread_create ");
       exit(EXIT_FAILURE); 
     }
-    //    usleep(400000); 
   }
 
 
