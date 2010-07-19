@@ -232,7 +232,6 @@ void lcmIter(const TransactionTable &tt, OccurencesTable *ot,
      if(rebase  && depth <= 1){ 
        for(const item_t *candidate = candidates.pData(); 
 	   candidate < candidates.pEnd() && *candidate < item; ++candidate){
-	 cout<<"x";
 	 tuple_t t; 
 	 t.tt = &newTT; 
 	 t.ot = ot; 
