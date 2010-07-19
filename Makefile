@@ -100,6 +100,11 @@ dep:
 	$(CC)  $(CFLAGS) -MM $(SRCS) > depends
 
 libmelinda.a:
+	if [ $(debug) -eq 1 ]; then \
+	cmake ../../melinda/ -DCMAKE_BUILD_TYPE=Debug ;\
+	else \
+	cmake ../../melinda/ -DCMAKE_BUILD_TYPE=Release ;\
+	fi
 	make -C$(MELINDA_DIR) melinda
 
 # liblt.a:

@@ -152,7 +152,7 @@ void lcmIter(const TransactionTable &tt, OccurencesTable *ot,
      Array<int> permutations;
 #if defined(PARALLEL_PROCESS) || defined(REBASE_PERMUTE_ITEMS)
 #ifdef REBASE_PERMUTE_ITEMS
-     /* Decide wether we should rebase or not */
+     /* Decide wether we should reorder the items or not */
      bool reorder = nbCandidates > 8;
 #else
      bool reorder = false; 
@@ -228,15 +228,21 @@ void lcmIter(const TransactionTable &tt, OccurencesTable *ot,
      /* Parallel call, if possible */
 
 #ifdef MULTI_LEVEL_TUPLES
+
      if(rebase  && depth <= 1){ 
        for(const item_t *candidate = candidates.pData(); 
 	   candidate < candidates.pEnd() && *candidate < item; ++candidate){
-	 Tuple t("ppppiii", (char*) &newTT, (char*) ot, (char*)frequencies, 
-		 (char*) new Itemset(*itemset), *candidate, threshold, item); 
-	 ts.putTuple(t, (unsigned int)THREAD::getMyID()); 
-	 //      itemset.resize(0); 
-	 //      (*ot.occs)[item].clear(); 
-       }       
+	 cout<<"x";
+	 tuple_t t; 
+	 t.tt = &newTT; 
+	 t.ot = ot; 
+	 t.frequencies = frequencies; 
+	 t.itemset = new Itemset(*itemset);
+	 t.item = *candidate;
+	 t.threshold = threshold; 
+	 t.previous = item; 
+	 m_tuplespace_put(&ts, (opaque_tuple_t*)&t, 1); 
+       }
      }
   
      /* Recursive call for each candidates items. */
@@ -302,13 +308,6 @@ void processTupleThread(int id){
   output.open(outputName); 
 #endif
   
-  TransactionTable *tt; 
-  OccurencesTable *ot;
-  Frequencies *frequencies;
-  Itemset *itemset; 
-  item_t item; 
-  int threshold; 
-  item_t previous; 
 
   /* Retreives a Tuple */
   for(;;){
@@ -327,11 +326,10 @@ void processTupleThread(int id){
     // threshold = t->getValue<int>(5); 
     // previous = t->getValue<item_t>(6); 
 
-    tt = t.tt; 
     /* call */
     //    usleep(200000); 
     lcmIter(*t.tt, t.ot, t.frequencies, t.itemset, t.item, t.threshold,
-	    t.previous, output, (previous==-1?1:2), true); 
+	    t.previous, output, (t.previous==-1?1:2), true); 
 
     //    delete t; 
   }
@@ -368,6 +366,7 @@ int main(int argc, char **argv){
   SHOW_DEFINE(PARALLEL_PROCESS);
   SHOW_DEFINE(REBASE_PERMUTE_ITEMS);
   SHOW_DEFINE(DB_REDUCTION_REDUCE_INITIAL_DB);
+  SHOW_DEFINE(MULTI_LEVEL_TUPLES); 
 
   /* Recover mandatory arguments, (ie. input file and threadhold) */
   char* inputFileName = argv[1] ;
