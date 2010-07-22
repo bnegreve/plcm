@@ -68,8 +68,8 @@ typedef Array<item_t> Itemset;
 /* Enable db reduction on initial database*/
 #define DB_REDUCTION_REDUCE_INITIAL_DB 
 #define DB_REDUCTION_ENABLE_SUFFIX_INTERSECTION 
-static const unsigned int DB_REDUCTION_MIN_DB_SIZE = 7;
-static const unsigned int DB_REDUCTION_MIN_CANDIDATES_NMBR = 2;
+static const int DB_REDUCTION_MIN_DB_SIZE = 7;
+static const int DB_REDUCTION_MIN_CANDIDATES_NMBR = 2;
 #define DB_REDUCTION_QUICKSORT_THRESHOLD 100000//200000//500
 #define DB_REDUCTION_INSERTIONSORT_THRESHOLD 0//12
 
@@ -93,7 +93,7 @@ static const int TRANSACTION_BUFFER_SIZE = 32768;
 inline double timer(){
   static struct timeval tv ;
   static bool running = false; 
-  if(running = !running){
+  if((running = !running)){
     /* if it was not running before ...*/
     gettimeofday(&tv, NULL); 
     return 0; 

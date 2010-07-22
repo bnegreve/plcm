@@ -12,7 +12,7 @@
 #CC = g++ -m32
 #CC = icc -O1
 #CC = g++ -O3 
-CC = g++ -g
+CC = g++ -g -Wall
 
 MELINDA_DIR=../../melinda/
 

@@ -65,11 +65,11 @@ public:
     return _data+_size; 
   }
   
-  inline const unsigned int size() const{
+  inline const  int size() const{
     return _size; 
   }
 
-  inline const unsigned int getSize() const{
+  inline const  int getSize() const{
     return _size; 
   }
   

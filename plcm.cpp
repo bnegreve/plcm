@@ -18,7 +18,8 @@ extern "C" {
 #include "melinda_local.hpp"
 tuplespace_t ts;
 
-const unsigned int NUM_THREADS = NUM_THREADS_MACRO;
+//const int NUM_THREADS = NUM_THREADS_MACRO;
+int numThreads = 1; 
 #endif //PARALLEL_PROCESS
 
 std::ostream *output; 
@@ -66,7 +67,7 @@ void lcmIter(const TransactionTable &tt, OccurencesTable *ot,
 
   //  cout<<"DEPTH : "<<depth<<"rebase : "<<rebase<<endl;
   itemset->pushBack((*ot->perms)[item]);
-
+p
   //get a copy of item occurences 
   const Occurences &itemOccs((*ot->occs)[item]);
   
@@ -338,30 +339,58 @@ void processTupleThread(int id){
 #endif // PARALLEL_PROCESS
 /*** END processTupleThread ***/
 
+void usage(char *a){
+  cerr<<"Usage: "<<a<<" dataset asbolute_threshold [-t nbthreads] [-o output file] \n"<<endl;
+  exit(EXIT_FAILURE);
+}
 
 /*** BEG main ***/
 int main(int argc, char **argv){
+
+  /* Recover optional arguments */
+  int opt; 
+  std::string outputFilename; 
+
+  while ((opt = getopt(argc, argv, "o:t:")) != -1) {
+    switch (opt) {
+    case 'o':
+      outputFilename = optarg;        
+      break;
+    case 't':
+      numThreads = atoi(optarg);
+      break;
+    default: /* '?' */
+      usage(argv[0]); 
+    }
+  }
+  /* Recover mandatory arguments, (ie. input file and threadhold) */
+  argv+=optind; 
+  if (argc - optind != 2) {
+    usage(argv[0]); 
+  }
+
+  char* inputFileName = argv[0] ;
+  int threshold = atoi(argv[1]) ;
+
+
   std::ofstream outputFile; 
-  m_tuplespace_init(&ts, sizeof(tuple_t), 0, TUPLESPACE_OPTIONAUTOCLOSE); 
-  m_thread_register(); 
-  /* Deals with optional argument (ie. output file) */ 
-  switch (argc){
-  case (3):
+  if(outputFilename.empty()){
     output = &std::cout; 
     cerr<<"No output file, using standard output."<<endl; 
-    break;       
-  case (4): 
-    outputFile.open(argv[3]); 
-    if(outputFile.fail()){
-      std::cerr<<"Error opening file : "<<argv[3]<<"."<<std::endl;
-      exit(EXIT_FAILURE); 
-    }
-    output = &outputFile; 
-    break; 
-  default :
-    cout << "Usage = " << argv[0] << " <input file name> <absolute support threshold> [<output file>]" << endl ;
-    exit(EXIT_FAILURE);     
   }
+
+  // else{
+  //   outputFile.open(outputFilename.c_str()); 
+  //   if(outputFile.fail()){
+  //     std::cerr<<"Error opening file : "<<outputFilename<<"."<<std::endl;
+  //     exit(EXIT_FAILURE); 
+  //   }
+  //   output = &outputFile; 
+  // }
+
+
+  m_tuplespace_init(&ts, sizeof(tuple_t), 0, TUPLESPACE_OPTIONAUTOCLOSE); 
+  m_thread_register(); 
   
   SHOW_DEFINE(NDEBUG); 
   SHOW_DEFINE(PARALLEL_PROCESS);
@@ -369,9 +398,6 @@ int main(int argc, char **argv){
   SHOW_DEFINE(DB_REDUCTION_REDUCE_INITIAL_DB);
   SHOW_DEFINE(MULTI_LEVEL_TUPLES); 
 
-  /* Recover mandatory arguments, (ie. input file and threadhold) */
-  char* inputFileName = argv[1] ;
-  int threshold = atoi(argv[2]) ;
 
 
   TransactionTable itt; 
@@ -413,9 +439,8 @@ int main(int argc, char **argv){
 
 #ifndef PARALLEL_PROCESS
   /* Sequential */
-
-
   Itemset itemset; 
+
   for (item_t item = 0; item <= itt.maxItem; item++){
     lcmIter(itt,  &ot, &frequencies,
 	    &itemset,  item, threshold, -1,  *output, 1, false);
@@ -430,15 +455,10 @@ int main(int argc, char **argv){
      creation of the threads, in the real life it is better to
      procecss the tuples while pushing the tuples */
 
-  /* Pushes tuples into the tuplespace, each tuple is data for a call to lcmIter */
-  std::vector<item_t> randomizer; 
+  int nbTuples = itt.maxItem+1;
+  tuple_t *tuples = new tuple_t[nbTuples];
 
-
-  int nbTuples = itt.maxItem+1; 
-  tuple_t tuples[nbTuples]; 
-
-
-  cout<<"Pushing "<<nbTuples<<" tuples"<<endl;
+   cout<<"Pushing "<<nbTuples<<" tuples"<<endl;
   for (item_t item = 0; item <= itt.maxItem; item++){
     tuple_t *t = &tuples[item]; 
     t->tt = &itt; 
@@ -451,16 +471,16 @@ int main(int argc, char **argv){
   }
 
   m_tuplespace_put(&ts, (opaque_tuple_t*)&tuples, nbTuples); 
-  m_tuplespace_close_at(&ts, NUM_THREADS);   
+  m_tuplespace_close_at(&ts, numThreads);   
 
 
 
-  /* Run the threads */
-  pthread_t *tids = new pthread_t[NUM_THREADS];
-  for(int i = 0; i < NUM_THREADS; i++){
+  //  Run the threads
+  pthread_t *tids = new pthread_t[numThreads];
+  for(int i = 0; i < numThreads; i++){
     cout<<"Creating thread"<<endl;
     if(pthread_create(&tids[i], NULL, 
-		      (void*(*)(void*))processTupleThread, (void*)i)){
+  		      (void*(*)(void*))processTupleThread, (void*)i)){
       perror("pthread_create ");
       exit(EXIT_FAILURE); 
     }
@@ -468,7 +488,7 @@ int main(int argc, char **argv){
 
 
 
-  for(int i = 0; i < NUM_THREADS; i++)
+  for(int i = 0; i < numThreads; i++)
     pthread_join(tids[i], NULL);
   
   cout<<"TIME "<<timer()<<endl;
@@ -482,6 +502,7 @@ int main(int argc, char **argv){
   cout<<nbItemsets<<endl;
 
   exit(EXIT_SUCCESS); 
+
 }
 /*** END main ***/
 
