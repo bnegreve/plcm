@@ -49,7 +49,7 @@ int loadTransactionsFromFile(char *fileName, TransactionTable *tt, int threshold
 
   /* TODO find the initial db size so the transactions array is not resized log_2(nb_transactions) times */
 
-    char buf[TRANSACTION_BUFFER_SIZE] ;
+  char buf[TRANSACTION_BUFFER_SIZE] ;
     int transactionIdx = -1; 
 
     int lineNmbr=0;
@@ -82,9 +82,9 @@ int loadTransactionsFromFile(char *fileName, TransactionTable *tt, int threshold
       }
       Transaction *currentTransaction = &(*transactions)[transactionIdx];
       
-      std::istringstream strStream;
+      std::istringstream strStream(buf);
       int currentItem;
-      strStream.str(buf);
+      strStream.str();
       while(strStream>>currentItem){		 
 	/* Read items in the transaction, pushes them into the current transaction. */
 #ifdef REORDER_ITEMS_BASE

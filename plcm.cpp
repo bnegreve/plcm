@@ -67,7 +67,7 @@ void lcmIter(const TransactionTable &tt, OccurencesTable *ot,
 
   //  cout<<"DEPTH : "<<depth<<"rebase : "<<rebase<<endl;
   itemset->pushBack((*ot->perms)[item]);
-p
+
   //get a copy of item occurences 
   const Occurences &itemOccs((*ot->occs)[item]);
   
@@ -316,7 +316,7 @@ void processTupleThread(int id){
     tuple_t t; 
     
     int r = m_tuplespace_get(&ts, 1, (tuple_t*)&t);
-
+    cout<<m_thread_id()<< " got a tuple"<<endl;
     if(r == TUPLESPACE_CLOSED)
       break; 
   
@@ -468,9 +468,14 @@ int main(int argc, char **argv){
     t->item = item; 
     t->threshold = threshold; 
     t->previous = -1;     
+
   }
 
-  m_tuplespace_put(&ts, (opaque_tuple_t*)&tuples, nbTuples); 
+
+    m_tuplespace_put(&ts, (opaque_tuple_t*)tuples, nbTuples); 
+
+  cout<<"done with putting"<<endl; 
+
   m_tuplespace_close_at(&ts, numThreads);   
 
 
