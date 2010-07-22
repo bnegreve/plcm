@@ -20,9 +20,9 @@ tuplespace_t ts;
 
 //const int NUM_THREADS = NUM_THREADS_MACRO;
 int numThreads = 1; 
-#endif //PARALLEL_PROCESS
+std::ofstream **outputs;
 
-std::ostream *output; 
+#endif //PARALLEL_PROCESS
 
 /*** BEG removeInfrequentItems ***/
 item_t removeInfrequentItems(Frequencies *frequencies, Itemset *itemset, 
@@ -63,7 +63,7 @@ item_t removeInfrequentItems(Frequencies *frequencies, Itemset *itemset,
 /*** BEG lcmIter ***/
 void lcmIter(const TransactionTable &tt, OccurencesTable *ot, 
 	     Frequencies *frequencies, Itemset *itemset, item_t item,
-	     int threshold, item_t previous, std::ostream &output, int depth, bool rebase){
+	     int threshold, item_t previous, int depth, bool rebase){
 
   //  cout<<"DEPTH : "<<depth<<"rebase : "<<rebase<<endl;
   itemset->pushBack((*ot->perms)[item]);
@@ -127,9 +127,7 @@ void lcmIter(const TransactionTable &tt, OccurencesTable *ot,
     return; 
   }
   
-  //output<<*itemset<<" ("<<freq<<") "<<endl;
-  dumpItemset(output, *itemset, freq); 
-  //  itemset.dump(output, freq);  
+  dumpItemset(*itemset, freq); 
   nbItemsets++; 
 
   item_t maxCandidate = -1;
@@ -252,7 +250,7 @@ void lcmIter(const TransactionTable &tt, OccurencesTable *ot,
 #endif //MULTI_LEVEL_TUPLES
        for(const item_t *candidate = candidates.pData(); 
 	   candidate < candidates.pEnd() && *candidate < item; ++candidate){
-	 lcmIter(newTT, ot, frequencies, itemset, *candidate, threshold, item, output, depth+1, false); 
+	 lcmIter(newTT, ot, frequencies, itemset, *candidate, threshold, item, depth+1, false); 
 	 
 	 /* Once the candidate is process, reset the occurences in ot so
 	    it can be reuse for next candidates with greater value */
@@ -285,12 +283,13 @@ void lcmIter(const TransactionTable &tt, OccurencesTable *ot,
 
 
 /*** BEG dumpItemsent ***/
-void dumpItemset(std::ostream &os, const Itemset &itemset, freq_t freq){
+void dumpItemset(const Itemset &itemset, freq_t freq){  
+  std::ostream *os = outputs[m_thread_id()];
   const item_t *iEnd = itemset.pEnd(); 
   for(const item_t *item = itemset.pData(); item != iEnd; ++item){
-    os<<*item<<" ";
+    *os<<*item<<" ";
   }
-  os<<"("<<freq<<")\n"; 
+  *os<<"("<<freq<<")\n"; 
 }
 /*** END dumpItemset ***/
 
@@ -299,24 +298,12 @@ void dumpItemset(std::ostream &os, const Itemset &itemset, freq_t freq){
 #ifdef PARALLEL_PROCESS
 void processTupleThread(int id){
   m_thread_register(); 
-
-  /* Open a file for the current thread output */
-  char outputName[] ="out_a"; 
-  outputName[4]+=id; 
-#ifdef MEMORY_OUTPUT
-  std::ostringstream output;
-#else
-  std::ofstream output;
-  output.open(outputName); 
-#endif
   
-
   /* Retreives a Tuple */
   for(;;){
     tuple_t t; 
     
     int r = m_tuplespace_get(&ts, 1, (tuple_t*)&t);
-    cout<<m_thread_id()<< " got a tuple"<<endl;
     if(r == TUPLESPACE_CLOSED)
       break; 
   
@@ -331,7 +318,7 @@ void processTupleThread(int id){
     /* call */
     //    usleep(200000); 
     lcmIter(*t.tt, t.ot, t.frequencies, t.itemset, t.item, t.threshold,
-	    t.previous, output, (t.previous==-1?1:2), true); 
+	    t.previous, (t.previous==-1?1:2), true); 
 
     //    delete t; 
   }
@@ -340,7 +327,7 @@ void processTupleThread(int id){
 /*** END processTupleThread ***/
 
 void usage(char *a){
-  cerr<<"Usage: "<<a<<" dataset asbolute_threshold [-t nbthreads] [-o output file] \n"<<endl;
+  cerr<<"Usage: "<<a<<" dataset asbolute_threshold output_prefix [-t nbthreads] \n"<<endl;
   exit(EXIT_FAILURE);
 }
 
@@ -349,13 +336,10 @@ int main(int argc, char **argv){
 
   /* Recover optional arguments */
   int opt; 
-  std::string outputFilename; 
 
-  while ((opt = getopt(argc, argv, "o:t:")) != -1) {
+
+  while ((opt = getopt(argc, argv, "t:")) != -1) {
     switch (opt) {
-    case 'o':
-      outputFilename = optarg;        
-      break;
     case 't':
       numThreads = atoi(optarg);
       break;
@@ -365,28 +349,26 @@ int main(int argc, char **argv){
   }
   /* Recover mandatory arguments, (ie. input file and threadhold) */
   argv+=optind; 
-  if (argc - optind != 2) {
+  if (argc - optind != 3) {
     usage(argv[0]); 
   }
 
-  char* inputFileName = argv[0] ;
+  char* inputFileName(argv[0]) ;
   int threshold = atoi(argv[1]) ;
+  std::string outputPrefix(argv[2]); 
 
-
-  std::ofstream outputFile; 
-  if(outputFilename.empty()){
-    output = &std::cout; 
-    cerr<<"No output file, using standard output."<<endl; 
+  if(outputPrefix.empty()){
+    cout<<"No output file, standard output."<<endl; 
+    outputs = NULL;
   }
-
-  // else{
-  //   outputFile.open(outputFilename.c_str()); 
-  //   if(outputFile.fail()){
-  //     std::cerr<<"Error opening file : "<<outputFilename<<"."<<std::endl;
-  //     exit(EXIT_FAILURE); 
-  //   }
-  //   output = &outputFile; 
-  // }
+  else{    
+    outputs = new std::ofstream *[numThreads+1]; 
+    for(int i = 0; i <= numThreads; i++){
+      std::ostringstream oss; 
+      oss<<outputPrefix<<i<<".dat"; 
+      outputs[i] = new std::ofstream(oss.str().c_str()); 
+    }
+  }
 
 
   m_tuplespace_init(&ts, sizeof(tuple_t), 0, TUPLESPACE_OPTIONAUTOCLOSE); 
@@ -443,7 +425,7 @@ int main(int argc, char **argv){
 
   for (item_t item = 0; item <= itt.maxItem; item++){
     lcmIter(itt,  &ot, &frequencies,
-	    &itemset,  item, threshold, -1,  *output, 1, false);
+	    &itemset,  item, threshold, -1, 1, false);
     itemset.resize(0); 
     (*ot.occs)[item].clear(); 
   }
@@ -458,7 +440,7 @@ int main(int argc, char **argv){
   int nbTuples = itt.maxItem+1;
   tuple_t *tuples = new tuple_t[nbTuples];
 
-   cout<<"Pushing "<<nbTuples<<" tuples"<<endl;
+  cout<<"Pushing "<<nbTuples<<" tuples"<<endl;
   for (item_t item = 0; item <= itt.maxItem; item++){
     tuple_t *t = &tuples[item]; 
     t->tt = &itt; 
@@ -471,11 +453,7 @@ int main(int argc, char **argv){
 
   }
 
-
-    m_tuplespace_put(&ts, (opaque_tuple_t*)tuples, nbTuples); 
-
-  cout<<"done with putting"<<endl; 
-
+  m_tuplespace_put(&ts, (opaque_tuple_t*)tuples, nbTuples); 
   m_tuplespace_close_at(&ts, numThreads);   
 
 
@@ -495,7 +473,13 @@ int main(int argc, char **argv){
 
   for(int i = 0; i < numThreads; i++)
     pthread_join(tids[i], NULL);
-  
+
+  for(int i = 0; i <= numThreads; i++){
+    outputs[i]->close();
+    delete outputs[i]; 
+  }
+  delete [] outputs;
+
   cout<<"TIME "<<timer()<<endl;
 
 #endif //PARALLEL_PROCESS

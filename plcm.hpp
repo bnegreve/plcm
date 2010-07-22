@@ -40,10 +40,10 @@ item_t removeInfrequentItems(Frequencies *frequencies, Itemset *itemset,
 
 void lcmIter(const TransactionTable &tt, OccurencesTable *ot, 
 	     Frequencies *frequencies, Itemset *itemset, item_t item,
-	     int threshold, item_t previous, std::ostream &output,
+	     int threshold, item_t previous,
 	     bool rebase, int depth);
 
-void dumpItemset(std::ostream &os, const Itemset &itemset, freq_t freq);
+void dumpItemset(const Itemset &itemset, freq_t freq);
 
 int main(int argc, char **argv); 
 

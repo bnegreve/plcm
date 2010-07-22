@@ -49,58 +49,57 @@ int loadTransactionsFromFile(char *fileName, TransactionTable *tt, int threshold
 
   /* TODO find the initial db size so the transactions array is not resized log_2(nb_transactions) times */
 
-  char buf[TRANSACTION_BUFFER_SIZE] ;
-    int transactionIdx = -1; 
+  char buf[TRANSACTION_BUFFER_SIZE] = {0};
+  int transactionIdx = -1; 
+  
+  int lineNmbr=0;
 
-    int lineNmbr=0;
-
-    /* Reads each transaction line */
-    for(;;){
-      
-      reader.getline(buf, TRANSACTION_BUFFER_SIZE);
-
-      if(reader.fail()){
-	if(reader.eof())
-	  break; 
-	else{
-	  cerr<<"Cannot read line from input file, be sure that the TRANSACTION_BUFFER_SIZE is big enough for each line of the file (line : "<<lineNmbr<<")."<<endl;
-	  exit(EXIT_FAILURE); 
-	}
-      }
-	
-      lineNmbr++;
-
-      /* Create a new empty transaction if needed */
-      if(transactionIdx == -1){
-	assert(tdOffset <= *dbSize);
-#ifdef NDEBUG
-	transactionIdx = transactions->pushBack(Transaction(transactionsData+tdOffset, 0)); 
-#else
-	transactionIdx = transactions->pushBack(Transaction(transactionsData+tdOffset, *dbSize - tdOffset)); 
-#endif
-	weights->pushBack(1); 
-      }
-      Transaction *currentTransaction = &(*transactions)[transactionIdx];
-      
-      std::istringstream strStream(buf);
-      int currentItem;
-      strStream.str();
-      while(strStream>>currentItem){		 
-	/* Read items in the transaction, pushes them into the current transaction. */
-#ifdef REORDER_ITEMS_BASE
-	currentItem = (*permutations)[currentItem]; /* Get the permuted value of the red item */
-#endif //REORDER_ITEMS_BASE
-	if(itemSupport[currentItem] > 0){
-	  currentTransaction->pushBack(currentItem); 	  
-	}
-	else{
-	  //TODO remember removed tid. 
-	}
-      }
-      if(!strStream.eof()){
-	cerr<<"Cannot parse input file (line "<<lineNmbr<<")."<<endl;
+  /* Reads each transaction line */
+  for(;;){
+    
+    reader.getline(buf, TRANSACTION_BUFFER_SIZE);
+    if(reader.fail()){
+      if(reader.eof())
+	break; 
+      else{
+	cerr<<"Cannot read line from input file, be sure that the TRANSACTION_BUFFER_SIZE is big enough for each line of the file (line : "<<lineNmbr<<")."<<endl;
 	exit(EXIT_FAILURE); 
       }
+    }
+    
+    lineNmbr++;
+    
+    /* Create a new empty transaction if needed */
+    if(transactionIdx == -1){
+      assert(tdOffset <= *dbSize);
+#ifdef NDEBUG
+      transactionIdx = transactions->pushBack(Transaction(transactionsData+tdOffset, 0)); 
+#else
+      transactionIdx = transactions->pushBack(Transaction(transactionsData+tdOffset, *dbSize - tdOffset)); 
+#endif
+      weights->pushBack(1); 
+    }
+    Transaction *currentTransaction = &(*transactions)[transactionIdx];
+      
+    std::istringstream strStream(buf);
+    int currentItem;
+    
+    while(strStream>>currentItem){		 
+      /* Read items in the transaction, pushes them into the current transaction. */
+#ifdef REORDER_ITEMS_BASE
+      currentItem = (*permutations)[currentItem]; /* Get the permuted value of the red item */
+#endif //REORDER_ITEMS_BASE
+      if(itemSupport[currentItem] > 0){
+	currentTransaction->pushBack(currentItem); 	  
+      }
+      else{
+	//TODO remember removed tid. 
+      }
+    }
+    if(!strStream.eof()){
+      cerr<<"Cannot parse input file (line "<<lineNmbr<<")."<<endl;
+      exit(EXIT_FAILURE); 
+    }
 
      
       /* If the transaction is empty currentTransactionIdx is kept at the same value, 
