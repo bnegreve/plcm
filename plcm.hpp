@@ -1,12 +1,36 @@
-//
-// plcm.hpp
-// 
-// Made by Benjamin Negrevergne
-// Login   <bengreve@confiance.imag.fr>
-// 
-// Started on  Thu Jul  9 15:05:25 2009 Benjamin Negrevergne
-// Last update Thu Jul  9 15:05:25 2009 Benjamin Negrevergne
-//
+/*
+** PLCM/Melinda
+** (c) Benjamin Negrevergne, 2010
+** Original LCM algorithm from Takaki Uno and Hiroki Arimura.
+**
+** The program was design and implemented in colaboration with
+** Alexandre Termier and Jean-François Méhaut.
+** 
+** See the README file for installation, usage, and details.
+** See the LICENSE file for licensing.
+*/
+/*
+** PLCM/Melinda
+** (c) Benjamin Negrevergne, 2010
+** Original LCM algorithm from Takaki Uno and Hiroki Arimura.
+**
+** The program was design and implemented in colaboration with
+** Alexandre Termier and Jean-François Méhaut.
+** 
+** See the README file for installation, usage, and details.
+** See the LICENSE file for licensing.
+*/
+/*
+** PLCM/Melinda
+** (c) Benjamin Negrevergne, 2010
+** Original LCM algorithm from Takaki Uno and Hiroki Arimura.
+**
+** The program was design and implemented in colaboration with
+** Alexandre Termier and Jean-François Méhaut.
+** 
+** See the README file for installation, usage, and details.
+** See the LICENSE file for licensing.
+*/
 
 #ifndef   	_PLCM_HPP_
 #define   	_PLCM_HPP_

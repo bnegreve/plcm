@@ -1,12 +1,36 @@
-//
-// Transactions.hpp
-// 
-// Made by Benjamin Negrevergne
-// Login   <bengreve@confiance.imag.fr>
-// 
-// Started on  Wed Jul  8 14:36:33 2009 Benjamin Negrevergne
-// Last update Wed Jul  8 14:36:33 2009 Benjamin Negrevergne
-//
+/*
+** PLCM/Melinda
+** (c) Benjamin Negrevergne, 2010
+** Original LCM algorithm from Takaki Uno and Hiroki Arimura.
+**
+** The program was design and implemented in colaboration with
+** Alexandre Termier and Jean-François Méhaut.
+** 
+** See the README file for installation, usage, and details.
+** See the LICENSE file for licensing.
+*/
+/*
+** PLCM/Melinda
+** (c) Benjamin Negrevergne, 2010
+** Original LCM algorithm from Takaki Uno and Hiroki Arimura.
+**
+** The program was design and implemented in colaboration with
+** Alexandre Termier and Jean-François Méhaut.
+** 
+** See the README file for installation, usage, and details.
+** See the LICENSE file for licensing.
+*/
+/*
+** PLCM/Melinda
+** (c) Benjamin Negrevergne, 2010
+** Original LCM algorithm from Takaki Uno and Hiroki Arimura.
+**
+** The program was design and implemented in colaboration with
+** Alexandre Termier and Jean-François Méhaut.
+** 
+** See the README file for installation, usage, and details.
+** See the LICENSE file for licensing.
+*/
 
 #ifndef   	_TRANSACTIONS_HPP_
 #define   	_TRANSACTIONS_HPP_

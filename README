@@ -1,6 +1,91 @@
-
 PLCM is a frequent itemset mining algorithm based on the LCM algorithm. 
 
-Reference paper : 
-Discovering Closed Frequent Itemsets on Multicore : Parallelizing Computations and Optimizing Memory Accesses. Benjamin Negrevergne Alexandre Termier Jean-François Méhaut And Takeaki Uno. 
+##################################
+##### Reference publications #####
+##################################
 
+Discovering Closed Frequent Itemsets on Multicore :
+Parallelizing Computations and Optimizing Memory Accesses. 
+
+Benjamin Negrevergne Alexandre Termier Jean-François Méhaut And
+Takeaki Uno.
+
+LCM ver. 2: Effcient Mining Algorithms for
+Frequent/Closed/Maximal Itemsets
+
+Takeaki Uno1, Masashi Kiyomi1, Hiroki Arimura2
+
+#######################
+##### Compilation #####
+#######################
+
+$> cmake . 
+$> make
+
+
+### debug mode ###
+
+$> cmake -DCMAKE_BUILD_TYPE=Debug
+$> make
+
+To set the build system in debug mode 
+
+
+Use
+$> cmake -DCMAKE_BUILD_TYPE=Release
+$> make
+
+to switch back de Release mode.
+
+#################
+###### Run ######
+#################
+
+./plcm <path_to_dataset> <absolure threshold> <output prefix> [ -t number of threads ]
+
+
+#######################
+##### File format #####
+#######################
+
+### Input file ###
+Dataset must be a single ASCII file. 
+
+Each line is a transaction. 
+Each transaction contains distincts items. 
+Transaction must be ordered. 
+Last line must be empty.
+
+eg. 
+--- file test.dat ---
+1 2 4 6
+1 2 3 5 7
+2 3
+
+is a valid dataset. 
+
+### Output file ###
+
+plcm output files have the following format : 
+* each line is a frequent closed itemset
+* frequency is stored at the end of the line into brackets.
+
+eg.
+running plcm on test.dat dataset, with the following command 
+./plcm test.dat 2 out -t 1
+
+will generate the following file 
+
+--- file out1.dat ---
+2 (3)
+1 2 (2)
+3 2 (2)
+
+For efficiency reason, there are as many file as threads there are
+threads. The complete solution is distributed among all the generated files.
+
+The output files are named after the prefix (3 argument) following by
+the thread id.
+
+You can change the output format by modifying the dumpItemset()
+function in plcm.hpp and plcm.cpp

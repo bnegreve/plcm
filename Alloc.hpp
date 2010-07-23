@@ -1,12 +1,36 @@
-//
-// Alloc.hpp
-// 
-// Made by Benjamin Negrevergne
-// Login   <bengreve@confiance.imag.fr>
-// 
-// Started on  Fri Mar  6 11:48:02 2009 Benjamin Negrevergne
-// Last update Wed Mar 11 16:24:37 2009 Benjamin Negrevergne
-//
+/*
+** PLCM/Melinda
+** (c) Benjamin Negrevergne, 2010
+** Original LCM algorithm from Takaki Uno and Hiroki Arimura.
+**
+** The program was design and implemented in colaboration with
+** Alexandre Termier and Jean-François Méhaut.
+** 
+** See the README file for installation, usage, and details.
+** See the LICENSE file for licensing.
+*/
+/*
+** PLCM/Melinda
+** (c) Benjamin Negrevergne, 2010
+** Original LCM algorithm from Takaki Uno and Hiroki Arimura.
+**
+** The program was design and implemented in colaboration with
+** Alexandre Termier and Jean-François Méhaut.
+** 
+** See the README file for installation, usage, and details.
+** See the LICENSE file for licensing.
+*/
+/*
+** PLCM/Melinda
+** (c) Benjamin Negrevergne, 2010
+** Original LCM algorithm from Takaki Uno and Hiroki Arimura.
+**
+** The program was design and implemented in colaboration with
+** Alexandre Termier and Jean-François Méhaut.
+** 
+** See the README file for installation, usage, and details.
+** See the LICENSE file for licensing.
+*/
 
 #ifndef   	_ALLOC_HPP_
 #define   	_ALLOC_HPP_
