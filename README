@@ -89,3 +89,13 @@ the thread id.
 
 You can change the output format by modifying the dumpItemset()
 function in plcm.hpp and plcm.cpp
+
+################
+##### BUGs #####
+################
+
+Repport bugs and/or comments at : 
+FirstName.LastName@imag.fr
+
+My FirstName is Benjamin
+My LastName is Negrevergne
