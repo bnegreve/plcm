@@ -345,20 +345,20 @@ int main(int argc, char **argv){
   /* Recover optional arguments */
   int opt; 
 
-
+  char *binName = argv[0]; 
   while ((opt = getopt(argc, argv, "t:")) != -1) {
     switch (opt) {
     case 't':
       numThreads = atoi(optarg);
       break;
     default: /* '?' */
-      usage(argv[0]); 
+      usage(binName); 
     }
   }
   /* Recover mandatory arguments, (ie. input file and threadhold) */
   argv+=optind; 
   if (argc - optind != 3) {
-    usage(argv[0]); 
+    usage(binName); 
   }
 
   char* inputFileName(argv[0]) ;
