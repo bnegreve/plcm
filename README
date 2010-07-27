@@ -19,7 +19,7 @@ Takeaki Uno1, Masashi Kiyomi1, Hiroki Arimura2
 ##### Compilation #####
 #######################
 
-$> cmake . 
+$> cmake ../../ (generate the makefiles for the whole project)
 $> make
 
 

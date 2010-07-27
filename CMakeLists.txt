@@ -13,19 +13,7 @@ cmake_minimum_required(VERSION 2.6)
 add_definitions()
 include_directories(../../melinda)
 
-
-
-set(CMAKE_C_FLAGS_DEBUG -g)
-set(CMAKE_C_FLAGS_RELEASE "-O3 -DNDEBUG")
-
-#project(plcm)
-
-
 add_executable(plcm plcm.cpp Occurences.cpp Transactions.cpp Permutations.cpp)
-#add_dependencies(plcm melinda)
 target_link_libraries(plcm melinda pthread)
-#add_library(melinda STATIC IMPORTED)
-#set_property(TARGET melinda PROPERTY IMPORTED_LOCATION ../../melinda/libmelinda.a)
-
 
 add_custom_target(plcm_doc doxygen doc)
