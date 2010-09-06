@@ -451,10 +451,10 @@ int main(int argc, char **argv){
   cout<<"Pushing "<<nbTuples<<" tuples"<<endl;
   for (item_t item = 0; item <= itt.maxItem; item++){
     tuple_t *t = &tuples[item]; 
-    t->tt = &itt; 
+    t->tt = &itt; /* conditional database */
     t->ot = &ot; 
     t->frequencies = &frequencies; 
-    t->itemset = new Itemset; 
+    t->itemset = new Itemset; /* pattern */
     t->item = item; 
     t->threshold = threshold; 
     t->previous = -1;     
