@@ -21,21 +21,21 @@ Takeaki Uno1, Masashi Kiyomi1, Hiroki Arimura2
 ##### Compile #####
 ###################
 
-$ ./configure 
-$ make
-$ make install 
+./configure 
+make
+make install 
 
 ### debug mode ###
 
-$ ./configure --enable-debug=yes
-$ make
-$ make install 
+./configure --enable-debug=yes
+make
+make install 
 
 #################
 ###### Run ######
 #################
 
-./plcm <path_to_dataset> <absolure threshold> <output prefix> [ -t number of threads ]
+plcm <path_to_dataset> <absolure threshold> <output prefix> [ -t number of threads ]
 
 
 #######################
@@ -96,3 +96,21 @@ My LastName is Negrevergne
 
 If you observe a bug, please compile in debug mode and report the error message if any. 
 (To compile in debug mode use ./configure --enable-debug=yes.)
+
+
+#######################
+##### Developpers #####
+#######################
+
+To checkout the source tree:
+git clone <plcm_git_repos> plcm
+cd plcm
+git submodule init
+git submodule update
+
+Compile with the standard procedure (see Compile section)
+
+./configure 
+make 
+make install
+
