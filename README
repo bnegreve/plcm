@@ -17,27 +17,19 @@ Frequent/Closed/Maximal Itemsets
 
 Takeaki Uno1, Masashi Kiyomi1, Hiroki Arimura2
 
-#######################
-##### Compilation #####
-#######################
+###################
+##### Compile #####
+###################
 
-$> cmake ../../ (generate the makefiles for the whole project)
-$> make
-
+$ ./configure 
+$ make
+$ make install 
 
 ### debug mode ###
 
-$> cmake -DCMAKE_BUILD_TYPE=Debug
-$> make
-
-To set the build system in debug mode 
-
-
-Use
-$> cmake -DCMAKE_BUILD_TYPE=Release
-$> make
-
-to switch back de Release mode.
+$ ./configure --enable-debug=yes
+$ make
+$ make install 
 
 #################
 ###### Run ######
@@ -96,8 +88,11 @@ function in plcm.hpp and plcm.cpp
 ##### BUGs #####
 ################
 
-Repport bugs and/or comments at : 
+Repport bugs and/or comments at: 
 FirstName.LastName@imag.fr
 
 My FirstName is Benjamin
 My LastName is Negrevergne
+
+If you observe a bug, please compile in debug mode and report the error message if any. 
+(To compile in debug mode use ./configure --enable-debug=yes.)
