@@ -471,8 +471,9 @@ int main(int argc, char **argv){
 
   //  Run the threads
   pthread_t *tids = new pthread_t[numThreads];
+  cout<<"Creating "<<numThreads<<" thread(s)."<<endl;
+      
   for(int i = 0; i < numThreads; i++){
-    cout<<"Creating thread"<<endl;
     if(pthread_create(&tids[i], NULL, 
   		      (void*(*)(void*))processTupleThread, (void*)i)){
       perror("pthread_create ");
