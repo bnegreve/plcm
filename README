@@ -39,7 +39,7 @@ make install
 ###### Run ######
 #################
 
-plcm <path_to_dataset> <absolute threshold> <output_file> [ -t number of threads ]
+plcm <dataset file> <absolute threshold> <output file> [ -t number of threads ]
 
 (If output is '-' then plcm dumps itemsets on the standard output.)
 
