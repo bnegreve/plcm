@@ -1,53 +1,64 @@
-PLCM is a frequent itemset mining algorithm based on the LCM algorithm. 
 
-##################
-#### Download ####
-##################
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<link rel="stylesheet" type="text/css" href="main.css" />
+<title>Codes source</title>
+</head>
+<body>
+<h2>PLCM</h2>
+PLCM is the fastest closed frequent itemset mining algorithm based on the LCM algorithm. 
 
-Latest version at: http://people.cs.kuleuven.be/~benjamin.negrevergne/plcm/plcm_latest.tar.gz
+<h2>Download</h2>
+<pre>
+Latest version at: <a href="http://people.cs.kuleuven.be/~benjamin.negrevergne/plcm/plcm_latest.tar.gz">http://people.cs.kuleuven.be/~benjamin.negrevergne/plcm/plcm_latest.tar.gz</a>
+</pre>
 
-##################################
-##### Reference publications #####
-##################################
 
-Discovering Closed Frequent Itemsets on Multicore:
+<h2> Reference publications</h2>
+
+<ul>
+<li>Discovering Closed Frequent Itemsets on Multicore :
 Parallelizing Computations and Optimizing Memory Accesses. 
 
 Benjamin Negrevergne Alexandre Termier Jean-François Méhaut And
 Takeaki Uno.
-
+</li>
+<li>
 LCM ver. 2: Efficient Mining Algorithms for
 Frequent/Closed/Maximal Itemsets
 
-Takeaki Uno1, Masashi Kiyomi, Hiroki Arimura2
+Takeaki Uno1, Masashi Kiyomi1, Hiroki Arimura2
+</li>
+</ul>
 
-###################
-##### Compile #####
-###################
+<h2>Compile</h2>
 
+<pre>
 ./configure 
 make
 make install 
+</pre>
 
-### debug mode ###
+<h3> debug mode compilation</h3>
 
+<pre>
 ./configure --enable-debug=yes
 make
 make install 
+</pre>
 
-#################
-###### Run ######
-#################
-
-plcm <path_to_dataset> <absolute threshold> <output_file> [ -t number of threads ]
+<h2>Run</h2>
+<pre>
+plcm path_to_dataset absolute threshold output_file [ -t number of threads ]
+</pre>
 
 (If output is '-' then plcm dumps itemsets on the standard output.)
 
-#######################
-##### File format #####
-#######################
+<h2>Input/Output file format</h2>
 
-### Input file ###
+<h3>Input file</h3>
 Dataset must be a single ASCII file. 
 
 Each line is a transaction. 
@@ -56,36 +67,37 @@ Transaction must be ordered.
 Last line must be empty.
 
 eg. 
+<pre>
 --- file test.dat ---
 1 2 4 6
 1 2 3 5 7
 2 3
-
+</pre>
 is a valid dataset. 
 
-### Output file ###
+<h3>Output file</h3>
 
 plcm output files have the following format: 
-* each line is a frequent closed itemset
-* frequency is stored at the end of the line into brackets.
-
+<ul>
+<li> each line is a frequent closed itemset</li>
+<li> frequency is stored at the end of the line into brackets.</li>
+</ul>
 eg.
 running plcm on test.dat dataset, with the following command 
-./plcm test.dat 2 out.dat -t 1
+<pre>plcm test.dat 2 out.dat -t 1</pre>
 
 will generate the following file 
-
---- file out.dat ---
+<pre>
+--- file out1.dat ---
 2 (3)
 1 2 (2)
 3 2 (2)
-
+</pre>
+<p>
 You can change the output format by modifying the dumpItemset()
 function in plcm.hpp and plcm.cpp
-
-################
-##### BUGs #####
-################
+</p>
+<h2> Questions and bug reporting </h2>
 
 Report bugs and/or comments at: 
 FirstName.LastName@imag.fr
@@ -96,11 +108,7 @@ My LastName is Negrevergne
 If you observe a bug, please compile in debug mode and report the error message if any. 
 (To compile in debug mode use ./configure --enable-debug=yes.)
 
-
-######################
-##### Developers #####
-######################
-
+<h2> Developers</h2>
 To checkout the source tree:
 git clone <plcm_git_repos> plcm
 cd plcm
@@ -112,4 +120,8 @@ Compile with the standard procedure (see Compile section)
 ./configure 
 make 
 make install
+
+
+</body>
+</html>
 
