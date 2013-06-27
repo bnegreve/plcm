@@ -1,0 +1,6 @@
+plcm-1.1
+- Fix clang warnings.
+- fix segfault when running on mac (thanks to Madis Rumming).
+- Output everything in one single file (slightly slower though).
+- Switch to autotools.
+- Fix license.
