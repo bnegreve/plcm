@@ -371,7 +371,7 @@ int main(int argc, char **argv){
   std::string outputFile(argv[2]); 
 
   if(outputFile == "-"){
-    cout<<"No output file, standard output."<<endl;
+    cerr<<"No output file, standard output."<<endl;
     output = &cout; 
   }
   else{    
@@ -440,7 +440,7 @@ int main(int argc, char **argv){
     itemset.resize(0); 
     (*ot.occs)[item].clear(); 
   }
-  cout<<"TIME "<<timer()<<endl;
+  cerr<<"TIME "<<timer()<<endl;
 
 #else // PARALLEL_PROCESS
 
@@ -451,7 +451,7 @@ int main(int argc, char **argv){
   int nbTuples = itt.maxItem+1;
   tuple_t *tuples = new tuple_t[nbTuples];
 
-  cout<<"Pushing "<<nbTuples<<" tuples"<<endl;
+  cerr<<"Pushing "<<nbTuples<<" tuples"<<endl;
   for (item_t item = 0; item <= itt.maxItem; item++){
     tuple_t *t = &tuples[item]; 
     t->tt = &itt; /* conditional database */
@@ -471,7 +471,7 @@ int main(int argc, char **argv){
 
   //  Run the threads
   pthread_t *tids = new pthread_t[numThreads];
-  cout<<"Creating "<<numThreads<<" thread(s)."<<endl;
+  cerr<<"Creating "<<numThreads<<" thread(s)."<<endl;
       
   for(int i = 0; i < numThreads; i++){
     if(pthread_create(&tids[i], NULL, 
@@ -489,7 +489,7 @@ int main(int argc, char **argv){
     static_cast<std::ofstream*>(output)->close();
   }
   
-  cout<<"TIME "<<timer()<<endl;
+  cerr<<"TIME "<<timer()<<"s."<<endl;
 
 #endif //PARALLEL_PROCESS
 
@@ -497,7 +497,7 @@ int main(int argc, char **argv){
   deleteOccurencesTable(&ot); 
   //  deleteTransactionTable(&itt); 
 
-  cout<<nbItemsets<<endl;
+  cerr<<"Number of itemset(s): "<<nbItemsets<<"."<<endl;
 
   exit(EXIT_SUCCESS); 
 
