@@ -525,7 +525,7 @@ void radixSort__(Array <tid_t> *input, int index, int begin, int end,
     int windowStart = begin; 
     /* Reorder tids in input according to what is in the buckets */
     for (item_t item=0 ; item <= tt->maxItem ; ++item) { 
-      if (bucket = buckets[item]){
+      if ( (bucket = buckets[item]) != NULL ){
 	const tid_t *bucketEnd = bucket->pEnd();
 	for(tid_t *tid = bucket->pData(); tid != bucketEnd; ++tid){
 	  (*input)[begin++] = *tid;
