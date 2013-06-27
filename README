@@ -1,12 +1,16 @@
 PLCM is a frequent itemset mining algorithm based on the LCM algorithm. 
 
-You can fast the last version of this README at http://melindaplcm.ligforge.imag.fr/index.php
+##################
+#### Download ####
+##################
+
+Last version at: http://people.cs.kuleuven.be/~benjamin.negrevergne/plcm/plcm_latest.tar.gz
 
 ##################################
 ##### Reference publications #####
 ##################################
 
-Discovering Closed Frequent Itemsets on Multicore :
+Discovering Closed Frequent Itemsets on Multicore:
 Parallelizing Computations and Optimizing Memory Accesses. 
 
 Benjamin Negrevergne Alexandre Termier Jean-François Méhaut And
