@@ -28,7 +28,7 @@ tuplespace_t ts;
 
 //const int NUM_THREADS = NUM_THREADS_MACRO;
 int numThreads = 1; 
-std::ofstream **outputs;
+std::ostream *output; 
 
 #endif //PARALLEL_PROCESS
 
@@ -292,12 +292,17 @@ void lcmIter(const TransactionTable &tt, OccurencesTable *ot,
 
 /*** BEG dumpItemsent ***/
 void dumpItemset(const Itemset &itemset, freq_t freq){  
-  std::ostream *os = outputs[m_thread_id()];
+  static pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER; 
+  pthread_mutex_lock(&mutex);
+  
   const item_t *iEnd = itemset.pEnd(); 
   for(const item_t *item = itemset.pData(); item != iEnd; ++item){
-    *os<<*item<<" ";
+    *output<<*item<<" ";
   }
-  *os<<"("<<freq<<")\n"; 
+  *output<<"("<<freq<<")\n";
+  
+  pthread_mutex_unlock(&mutex); 
+
 }
 /*** END dumpItemset ***/
 
@@ -335,7 +340,7 @@ void processTupleThread(int id){
 /*** END processTupleThread ***/
 
 void usage(char *a){
-  cerr<<"Usage: "<<a<<" dataset asbolute_threshold output_prefix [-t nbthreads] \n"<<endl;
+  cerr<<"Usage: "<<a<<" dataset asbolute_threshold output_file [-t nbthreads] \n"<<endl;
   exit(EXIT_FAILURE);
 }
 
@@ -363,21 +368,19 @@ int main(int argc, char **argv){
 
   char* inputFileName(argv[0]) ;
   int threshold = atoi(argv[1]) ;
-  std::string outputPrefix(argv[2]); 
+  std::string outputFile(argv[2]); 
 
-  if(outputPrefix.empty()){
-    cout<<"No output file, standard output."<<endl; 
-    outputs = NULL;
+  if(outputFile == "-"){
+    cout<<"No output file, standard output."<<endl;
+    output = &cout; 
   }
   else{    
-    outputs = new std::ofstream *[numThreads+1]; 
-    for(int i = 0; i <= numThreads; i++){
-      std::ostringstream oss; 
-      oss<<outputPrefix<<i<<".dat"; 
-      outputs[i] = new std::ofstream(oss.str().c_str()); 
+    output = new std::ofstream(outputFile.c_str());
+    if(!output->good()){
+      cerr<<"Unable to open '"<<outputFile<<"' for writing. Aborting."<<endl; 
+      exit(EXIT_FAILURE); 
     }
   }
-
 
   m_tuplespace_init(&ts, sizeof(tuple_t), 0, TUPLESPACE_OPTIONAUTOCLOSE); 
   m_thread_register(); 
@@ -477,17 +480,14 @@ int main(int argc, char **argv){
     }
   }
 
-
-
+  
   for(int i = 0; i < numThreads; i++)
     pthread_join(tids[i], NULL);
 
-  for(int i = 0; i <= numThreads; i++){
-    outputs[i]->close();
-    delete outputs[i]; 
+  if(*output != cout){
+    static_cast<std::ofstream*>(output)->close();
   }
-  delete [] outputs;
-
+  
   cout<<"TIME "<<timer()<<endl;
 
 #endif //PARALLEL_PROCESS
