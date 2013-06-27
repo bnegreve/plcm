@@ -35,8 +35,9 @@ make install
 ###### Run ######
 #################
 
-plcm <path_to_dataset> <absolure threshold> <output prefix> [ -t number of threads ]
+plcm <path_to_dataset> <absolure threshold> <output_file> [ -t number of threads ]
 
+(If output is '-' then plcm dumps itemsets on the standard output.)
 
 #######################
 ##### File format #####
@@ -66,20 +67,14 @@ plcm output files have the following format :
 
 eg.
 running plcm on test.dat dataset, with the following command 
-./plcm test.dat 2 out -t 1
+./plcm test.dat 2 out.dat -t 1
 
 will generate the following file 
 
---- file out1.dat ---
+--- file out.dat ---
 2 (3)
 1 2 (2)
 3 2 (2)
-
-For efficiency reason, there are as many file as threads there are
-threads. The complete solution is distributed among all the generated files.
-
-The output files are named after the prefix (3 argument) following by
-the thread id.
 
 You can change the output format by modifying the dumpItemset()
 function in plcm.hpp and plcm.cpp
