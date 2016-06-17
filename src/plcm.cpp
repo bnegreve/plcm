@@ -340,7 +340,7 @@ void processTupleThread(int id){
 /*** END processTupleThread ***/
 
 void usage(char *a){
-  cerr<<"Usage: "<<a<<" dataset asbolute_threshold output_file [-t nbthreads] \n"<<endl;
+  cerr<<"Usage: "<<a<<" dataset absolute_threshold output_file [-t nbthreads] \n"<<endl;
   exit(EXIT_FAILURE);
 }
 
