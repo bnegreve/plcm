@@ -136,7 +136,6 @@ void lcmIter(const TransactionTable &tt, OccurencesTable *ot,
   }
   
   dumpItemset(*itemset, freq); 
-  nbItemsets++; 
 
   item_t maxCandidate = -1;
   int nbCandidates = 0; 
@@ -301,6 +300,8 @@ void dumpItemset(const Itemset &itemset, freq_t freq){
   }
   *output<<"("<<freq<<")\n";
   
+  nbItemsets++;
+
   pthread_mutex_unlock(&mutex); 
 
 }
