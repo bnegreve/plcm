@@ -486,7 +486,7 @@ int main(int argc, char **argv){
   for(int i = 0; i < numThreads; i++)
     pthread_join(tids[i], NULL);
 
-  if(*output != cout){
+  if(output != &cout){
     static_cast<std::ofstream*>(output)->close();
   }
   
