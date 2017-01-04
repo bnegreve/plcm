@@ -4,7 +4,10 @@ PLCM is a frequent itemset mining algorithm based on the LCM algorithm.
 #### Download ####
 ##################
 
-Latest version at: http://people.cs.kuleuven.be/~benjamin.negrevergne/plcm/plcm_latest.tar.gz
+
+
+Latest version at: http://www.lamsade.dauphine.fr/~bnegrevergne/webpage/software/plcm/plcm_latest.tar.gz
+(or on github https://github.com/bnegreve/plcm)
 
 ##################################
 ##### Reference publications #####
