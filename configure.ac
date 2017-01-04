@@ -1,4 +1,4 @@
-AC_INIT([PLCM], [1.1], [Benjamin.Negrevergne@imag.fr])
+AC_INIT([PLCM], [1.2], [Benjamin.Negrevergne@imag.fr])
 : ${CFLAGS=-O3}
 : ${CXXFLAGS=-O3}
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])

@@ -4,3 +4,9 @@ plcm-1.1
 - Output everything in one single file (slightly slower though).
 - Switch to autotools.
 - Fix license.
+
+plcm-1.2
+- Fix sync bug (thanks to Masahiro Sakai)
+- Adjust parameter to fit large datasets
+- Other minor fixes
+
