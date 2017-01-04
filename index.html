@@ -12,7 +12,10 @@ PLCM is the fastest closed frequent itemset mining algorithm based on the LCM al
 
 <h2>Download</h2>
 <pre>
-Latest version at: <a href="http://people.cs.kuleuven.be/~benjamin.negrevergne/plcm/plcm_latest.tar.gz">http://people.cs.kuleuven.be/~benjamin.negrevergne/plcm/plcm_latest.tar.gz</a>
+Latest version at: <a href="http://www.lamsade.dauphine.fr/~bnegrevergne/webpage/software/plcm/plcm_latest.tar.gz">http://www.lamsade.dauphine.fr/~bnegrevergne/webpage/software/plcm/plcm_latest.tar.gz</a>
+(or on github <a href="https://github.com/bnegreve/plcm">https://github.com/bnegreve/plcm</a>)
+
+
 </pre>
 
 
@@ -51,7 +54,7 @@ make install
 
 <h2>Run</h2>
 <pre>
-plcm dataset_file absolute_threshold output_file [ -t number_of_threads ]
+plcm path_to_dataset absolute threshold output_file [ -t number of threads ]
 </pre>
 
 (If output is '-' then plcm dumps itemsets on the standard output.)
@@ -100,14 +103,17 @@ function in plcm.hpp and plcm.cpp
 <h2> Questions and bug reporting </h2>
 
 Report bugs and/or comments at: 
-<pre>
-FirstName.LastName@imag.fr
+FirstName.LastName@dauphine.fr
 
+<p>
 My FirstName is Benjamin
 My LastName is Negrevergne
-</pre>
+</p>
+
+<p>
 If you observe a bug, please compile in debug mode and report the error message if any. 
 (To compile in debug mode use ./configure --enable-debug=yes.)
+</p>
 
 <h2> Developers</h2>
 To checkout the source tree:
